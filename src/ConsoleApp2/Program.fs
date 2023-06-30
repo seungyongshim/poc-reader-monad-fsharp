@@ -15,10 +15,13 @@ let getOrganisationId =
         return orgId
     }
 
-type MockEnv =
+type MockEnv() =
     interface IOrganisationIdGenerator with
         member _.GenerateId() = async {
-            return Ok (OrganisationId Guid.NewGuid())
+            let orgId = OrganisationId(Guid.NewGuid())
+            return Ok orgId
         }
 
-Reader.run getOrganisationId MockEnv 
+let ret = Reader.run getOrganisationId (MockEnv())
+
+let result = ret |> Async.RunSynchronously
